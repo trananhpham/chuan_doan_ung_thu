@@ -1,0 +1,75 @@
+# =============================================
+# Breast Cancer Diagnosis System — .gitignore
+# =============================================
+
+# ----------------------------
+# Datasets (large image files)
+# ----------------------------
+data/
+!data/.gitkeep
+
+# ----------------------------
+# Trained Model Weights
+# ----------------------------
+ai_engine/saved_models/*.pth
+ai_engine/saved_models/*.pt
+ai_engine/saved_models/*.bin
+!ai_engine/saved_models/.gitkeep
+
+# ----------------------------
+# Logs
+# ----------------------------
+logs/
+!logs/.gitkeep
+
+# ----------------------------
+# Python Cache & Bytecode
+# ----------------------------
+__pycache__/
+*.py[cod]
+*.pyo
+*.pyd
+.Python
+
+# ----------------------------
+# Virtual Environments
+# ----------------------------
+venv/
+env/
+.venv/
+.env/
+ENV/
+
+# ----------------------------
+# IDE & Editor Settings
+# ----------------------------
+.vscode/
+.idea/
+*.sublime-project
+*.sublime-workspace
+
+# ----------------------------
+# OS Files
+# ----------------------------
+.DS_Store
+Thumbs.db
+desktop.ini
+
+# ----------------------------
+# Pip / Build artifacts
+# ----------------------------
+*.egg-info/
+dist/
+build/
+*.whl
+
+# ----------------------------
+# Jupyter Notebooks Checkpoints
+# ----------------------------
+.ipynb_checkpoints/
+
+# ----------------------------
+# Environment Variables
+# ----------------------------
+.env
+*.env

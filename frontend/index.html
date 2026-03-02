@@ -1,0 +1,111 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Hệ Thống Chẩn Đoán Ung Thư Vú Trực Tuyến AI</title>
+    <!-- Use Inter font for a clean, modern medical feel -->
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+    <!-- Font Awesome for sleek icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+    <link rel="stylesheet" href="./css/styles.css">
+</head>
+<body>
+    
+    <!-- Background Elements -->
+    <div class="bg-shape circle-1"></div>
+    <div class="bg-shape circle-2"></div>
+    <div class="bg-shape circle-3"></div>
+
+    <div class="container glass-panel">
+        <header>
+            <div class="logo">
+                <i class="fa-solid fa-staff-snake"></i>
+                <div>
+                    <h1>Hệ Thống Phân Tích Khối U Vú</h1>
+                    <p>Mô hình Trí Tuệ Nhân Tạo Hỗ Trợ Chẩn Đoán</p>
+                </div>
+            </div>
+            
+            <div class="tab-controls">
+                <button class="tab-btn active" data-tab="ultrasound">
+                    <i class="fa-solid fa-wave-square"></i> Ảnh Siêu Âm
+                </button>
+                <button class="tab-btn" data-tab="biopsy">
+                    <i class="fa-solid fa-microscope"></i> Ảnh Vi Thể
+                </button>
+            </div>
+            <p class="tab-description" id="tab-desc">Chẩn đoán u vú dựa trên hình ảnh Siêu âm (Ultrasound) sử dụng thuật toán EfficientNet-B3.</p>
+        </header>
+
+        <main>
+            <!-- Upload Area Section -->
+            <section class="upload-section">
+                <div class="upload-dropzone" id="dropzone">
+                    <input type="file" id="file-input" accept="image/png, image/jpeg, image/jpg" hidden>
+                    
+                    <div class="dropzone-content" id="dz-idle">
+                        <i class="fa-regular fa-image upload-icon"></i>
+                        <h3>Kéo thả hoặc Nhấp để Chọn Ảnh</h3>
+                        <p>Hỗ trợ định dạng: .jpg, .png</p>
+                    </div>
+                    
+                    <!-- Image Preview Stage -->
+                    <div class="preview-content hidden" id="dz-preview">
+                        <img id="image-preview" src="" alt="Image Preview">
+                        <button class="btn-remove" id="btn-remove" title="Xóa ảnh"><i class="fa-solid fa-xmark"></i></button>
+                    </div>
+                </div>
+                
+                <div class="action-bar">
+                    <button class="btn btn-primary" id="btn-analyze" disabled>
+                        <i class="fa-solid fa-brain"></i> Bắt đầu Phân tích AI
+                    </button>
+                </div>
+            </section>
+
+            <!-- Results Section (Hidden initially) -->
+            <section class="results-section hidden" id="results-panel">
+                <div class="loader-container hidden" id="loader">
+                    <div class="pulse-ring"></div>
+                    <p>AI đang xử lý hình ảnh...</p>
+                </div>
+
+                <div class="report glass-panel-inner hidden" id="report">
+                    <div class="report-header">
+                        <h2>Biên bản Kết quả Chẩn đoán</h2>
+                        <span class="badge" id="result-badge">Hoàn thành</span>
+                    </div>
+
+                    <div class="report-grid">
+                        <div class="data-group main-verdict">
+                            <h4>Dự Báo Cuối Cùng</h4>
+                            <div class="verdict-value" id="verdict-main">-</div>
+                            <div class="verdict-confidence" id="verdict-conf">Độ tin cậy: -</div>
+                        </div>
+                    </div>
+
+                    <div class="details-chart">
+                        <h4>Xác suất thống kê chi tiết</h4>
+                        <div class="bars-container" id="details-bars">
+                            <!-- Injected dynamically by app.js -->
+                        </div>
+                    </div>
+                </div>
+                
+                <div class="error-msg hidden" id="error-box">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                    <span id="error-text">Có lỗi xảy ra khi kết nối tới máy chủ. Vui lòng kiểm tra lại Backend AI.</span>
+                </div>
+            </section>
+        </main>
+        
+        <footer>
+            <p>Hệ thống AI không thay thế chỉ định y khoa. Vui lòng tham vấn chuyên gia.</p>
+        </footer>
+    </div>
+
+    <!-- Scripts -->
+    <script src="./js/app.js"></script>
+</body>
+</html>
