@@ -105,6 +105,11 @@ function resetUpload() {
     fileInput.value = "";
     dzIdle.classList.remove('hidden');
     dzPreview.classList.add('hidden');
+    dzPreview.classList.remove('has-heatmap');
+    
+    const existingHeatmap = document.getElementById('heatmap-overlay');
+    if (existingHeatmap) existingHeatmap.remove();
+    
     btnAnalyze.disabled = true;
     resultsPanel.classList.add('hidden');
 }
@@ -160,6 +165,19 @@ function renderResults(data) {
     // Set colors
     mainVerdictBox.className = 'data-group main-verdict'; // reset
     mainVerdictBox.classList.add(`val-${data.prediction.toLowerCase()}`);
+    
+    // Render Grad-CAM Heatmap OVER original image if available
+    const existingHeatmap = document.getElementById('heatmap-overlay');
+    if (existingHeatmap) existingHeatmap.remove();
+    
+    if (data.heatmap) {
+        const heatmapImg = document.createElement('img');
+        heatmapImg.id = 'heatmap-overlay';
+        heatmapImg.src = data.heatmap;
+        heatmapImg.className = 'heatmap-overlay';
+        dzPreview.appendChild(heatmapImg);
+        dzPreview.classList.add('has-heatmap');
+    }
     
     // Set Details Bars
     detailsBars.innerHTML = '';

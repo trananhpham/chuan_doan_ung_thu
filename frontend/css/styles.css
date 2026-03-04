@@ -1,16 +1,18 @@
 :root {
-    --primary: #3b82f6; /* Medical blue */
+    --primary: #3b82f6;
+    /* Medical blue */
     --primary-light: rgba(59, 130, 246, 0.15);
     --secondary: #6366f1;
     --dark: #1e293b;
     --text: #334155;
     --text-light: #64748b;
-    --bg-color: #f0fdf4; /* Very light tint of green/blue */
-    
+    --bg-color: #f0fdf4;
+    /* Very light tint of green/blue */
+
     --success: #10b981;
     --danger: #ef4444;
     --warning: #f59e0b;
-    
+
     --glass-bg: rgba(255, 255, 255, 0.65);
     --glass-border: rgba(255, 255, 255, 0.8);
     --glass-shadow: 0 8px 32px 0 rgba(31, 38, 135, 0.1);
@@ -41,19 +43,28 @@ body {
     z-index: -1;
     border-radius: 50%;
 }
+
 .circle-1 {
-    top: -10%; left: -10%;
-    width: 600px; height: 600px;
+    top: -10%;
+    left: -10%;
+    width: 600px;
+    height: 600px;
     background: rgba(59, 130, 246, 0.4);
 }
+
 .circle-2 {
-    bottom: -10%; right: -5%;
-    width: 500px; height: 500px;
+    bottom: -10%;
+    right: -5%;
+    width: 500px;
+    height: 500px;
     background: rgba(16, 185, 129, 0.3);
 }
+
 .circle-3 {
-    top: 40%; left: 60%;
-    width: 400px; height: 400px;
+    top: 40%;
+    left: 60%;
+    width: 400px;
+    height: 400px;
     background: rgba(99, 102, 241, 0.25);
 }
 
@@ -75,7 +86,7 @@ body {
 .glass-panel-inner {
     background: rgba(255, 255, 255, 0.4);
     backdrop-filter: blur(8px);
-    border: 1px solid rgba(255,255,255,0.6);
+    border: 1px solid rgba(255, 255, 255, 0.6);
     border-radius: 16px;
     padding: 1.5rem;
 }
@@ -125,14 +136,14 @@ header {
 .tab-btn {
     padding: 0.75rem 2rem;
     border: none;
-    background: rgba(255,255,255,0.5);
+    background: rgba(255, 255, 255, 0.5);
     border-radius: 50px;
     font-size: 1rem;
     font-weight: 600;
     color: var(--text-light);
     cursor: pointer;
     transition: all 0.3s ease;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     display: flex;
     align-items: center;
     gap: 0.5rem;
@@ -181,7 +192,8 @@ main {
     justify-content: center;
 }
 
-.upload-dropzone:hover, .upload-dropzone.drag-active {
+.upload-dropzone:hover,
+.upload-dropzone.drag-active {
     border-color: var(--primary);
     background: rgba(59, 130, 246, 0.2);
 }
@@ -205,7 +217,10 @@ main {
 
 .preview-content {
     position: absolute;
-    top: 0; left: 0; width: 100%; height: 100%;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
     background: white;
     z-index: 10;
 }
@@ -215,20 +230,46 @@ main {
     height: 100%;
     object-fit: contain;
     padding: 1rem;
+    position: relative;
+    z-index: 1;
+}
+
+/* Heatmap Overlay styling */
+.preview-content.has-heatmap {
+    position: relative;
+}
+
+.heatmap-overlay {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+    padding: 1rem;
+    z-index: 5;
+    opacity: 0.6;
+    /* Slight transparency so original structure can still be somewhat seen if needed */
+    pointer-events: none;
 }
 
 .btn-remove {
     position: absolute;
-    top: 15px; right: 15px;
+    top: 15px;
+    right: 15px;
     background: rgba(239, 68, 68, 0.1);
     color: var(--danger);
     border: none;
-    width: 35px; height: 35px;
+    width: 35px;
+    height: 35px;
     border-radius: 50%;
     cursor: pointer;
     transition: all 0.2s;
-    display: flex; align-items: center; justify-content: center;
+    display: flex;
+    align-items: center;
+    justify-content: center;
 }
+
 .btn-remove:hover {
     background: var(--danger);
     color: white;
@@ -281,7 +322,8 @@ main {
 }
 
 .pulse-ring {
-    width: 80px; height: 80px;
+    width: 80px;
+    height: 80px;
     border-radius: 50%;
     border: 4px solid var(--primary-light);
     border-top-color: var(--primary);
@@ -289,7 +331,11 @@ main {
     margin-bottom: 1rem;
 }
 
-@keyframes spin { 100% { transform: rotate(360deg); } }
+@keyframes spin {
+    100% {
+        transform: rotate(360deg);
+    }
+}
 
 .report-header {
     display: flex;
@@ -297,7 +343,7 @@ main {
     align-items: center;
     margin-bottom: 1.5rem;
     padding-bottom: 1rem;
-    border-bottom: 1px solid rgba(0,0,0,0.05);
+    border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 }
 
 .report-header h2 {
@@ -319,55 +365,89 @@ main {
     padding: 2rem;
     background: white;
     border-radius: 12px;
-    box-shadow: 0 4px 6px rgba(0,0,0,0.02);
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.02);
     margin-bottom: 1.5rem;
 }
 
-.main-verdict h4 { color: var(--text-light); margin-bottom: 0.5rem; font-weight: 500;}
-.verdict-value { font-size: 2.5rem; font-weight: 800; color: var(--primary); text-transform: uppercase; letter-spacing: 1px; margin-bottom: 0.5rem;}
-.verdict-confidence { font-size: 1rem; font-weight: 600; color: var(--text); }
+.main-verdict h4 {
+    color: var(--text-light);
+    margin-bottom: 0.5rem;
+    font-weight: 500;
+}
+
+.verdict-value {
+    font-size: 2.5rem;
+    font-weight: 800;
+    color: var(--primary);
+    text-transform: uppercase;
+    letter-spacing: 1px;
+    margin-bottom: 0.5rem;
+}
+
+.verdict-confidence {
+    font-size: 1rem;
+    font-weight: 600;
+    color: var(--text);
+}
 
 /* Value Colors based on prediction */
-.val-benign .verdict-value { color: var(--success); }
-.val-normal .verdict-value { color: var(--text); }
-.val-malignant .verdict-value { color: var(--danger); }
+.val-benign .verdict-value {
+    color: var(--success);
+}
+
+.val-normal .verdict-value {
+    color: var(--text);
+}
+
+.val-malignant .verdict-value {
+    color: var(--danger);
+}
 
 /* Details Bars */
 .details-chart h4 {
     margin-bottom: 1rem;
     color: var(--dark);
 }
+
 .bars-container {
     display: flex;
     flex-direction: column;
     gap: 1rem;
 }
+
 .bar-row {
     display: flex;
     align-items: center;
     gap: 1rem;
 }
+
 .bar-label {
     width: 100px;
     font-size: 0.9rem;
     font-weight: 500;
     text-transform: capitalize;
 }
+
 .bar-track {
     flex: 1;
     height: 12px;
-    background: rgba(0,0,0,0.05);
+    background: rgba(0, 0, 0, 0.05);
     border-radius: 10px;
     overflow: hidden;
     position: relative;
 }
+
 .bar-fill {
     height: 100%;
     background: var(--primary);
     border-radius: 10px;
     transition: width 1s cubic-bezier(0.4, 0, 0.2, 1);
 }
-.bar-fill.Highest { background: var(--secondary); }
+
+.bar-fill.Highest {
+    background: var(--secondary);
+}
+
 .bar-percent {
     width: 50px;
     text-align: right;

@@ -5,6 +5,10 @@ from PIL import Image
 import io
 import os
 import logging
+import base64
+import numpy as np
+from pytorch_grad_cam import GradCAM
+from pytorch_grad_cam.utils.image import show_cam_on_image
 
 logger = logging.getLogger(__name__)
 
@@ -69,24 +73,25 @@ def load_models():
         logger.error(f"Error loading models: {e}")
 
 def preprocess_image(image_bytes):
-    """Converts raw bytes to a tensor ready for prediction."""
+    """Converts raw bytes to a tensor ready for prediction, and returns the PIL image too for CAM overlay."""
     try:
         image = Image.open(io.BytesIO(image_bytes)).convert('RGB')
         tensor = val_transforms(image).unsqueeze(0) # Add batch dimension
-        return tensor.to(device)
+        return tensor.to(device), image
     except Exception as e:
         logger.error(f"Error in image preprocessing: {e}")
-        return None
+        return None, None
 
 def predict_ultrasound(image_bytes):
-    """Runs inference for Ultrasound imagery."""
+    """Runs inference for Ultrasound imagery and generates Grad-CAM."""
     if ultrasound_model is None:
         return {"error": "Ultrasound model not loaded on server."}
         
-    tensor = preprocess_image(image_bytes)
+    tensor, original_image = preprocess_image(image_bytes)
     if tensor is None:
         return {"error": "Invalid image data."}
         
+    # Get model prediction
     with torch.no_grad():
         outputs = ultrasound_model(tensor)
         probabilities = torch.nn.functional.softmax(outputs[0], dim=0)
@@ -94,20 +99,48 @@ def predict_ultrasound(image_bytes):
         
     class_name = ULTRASOUND_CLASSES[predicted_idx.item()]
     
+    # Generate Grad-CAM Heatmap
+    # For EfficientNet, the last convolutional layer is usually in features/blocks
+    try:
+        target_layers = [ultrasound_model.features[-1]]
+        cam = GradCAM(model=ultrasound_model, target_layers=target_layers)
+        
+        # You have to pass the tensor to CAM to get the grayscale mask
+        grayscale_cam = cam(input_tensor=tensor, targets=None)
+        grayscale_cam = grayscale_cam[0, :]
+        
+        # Ensure original image is same size as tensor for correct overlay
+        resized_img = original_image.resize((224, 224))
+        img_np = np.array(resized_img) / 255.0
+        
+        # Overlay heatmap
+        cam_image = show_cam_on_image(img_np, grayscale_cam, use_rgb=True)
+        
+        # Convert to Base64
+        cam_pil = Image.fromarray(cam_image)
+        buffered = io.BytesIO()
+        cam_pil.save(buffered, format="JPEG")
+        Heatmap_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        Heatmap_b64 = f"data:image/jpeg;base64,{Heatmap_b64}"
+    except Exception as e:
+        logger.error(f"Grad-CAM Failed: {e}")
+        Heatmap_b64 = None
+    
     # Return exactly formatted response for UI consumption
     return {
         "success": True,
         "prediction": class_name.capitalize(),
         "confidence": round(confidence.item() * 100, 2),
-        "details": {ULTRASOUND_CLASSES[i].capitalize(): round(probabilities[i].item() * 100, 2) for i in range(len(ULTRASOUND_CLASSES))}
+        "details": {ULTRASOUND_CLASSES[i].capitalize(): round(probabilities[i].item() * 100, 2) for i in range(len(ULTRASOUND_CLASSES))},
+        "heatmap": Heatmap_b64
     }
 
 def predict_biopsy(image_bytes):
-    """Runs inference for Biopsy (Histopathology) imagery."""
+    """Runs inference for Biopsy (Histopathology) imagery and generates Grad-CAM."""
     if biopsy_model is None:
         return {"error": "Biopsy model not loaded on server."}
         
-    tensor = preprocess_image(image_bytes)
+    tensor, original_image = preprocess_image(image_bytes)
     if tensor is None:
         return {"error": "Invalid image data."}
         
@@ -118,9 +151,34 @@ def predict_biopsy(image_bytes):
         
     class_name = BIOPSY_CLASSES[predicted_idx.item()]
     
+    # Generate Grad-CAM Heatmap
+    try:
+        # ResNet-50 last conv block is layer4
+        target_layers = [biopsy_model.layer4[-1]]
+        cam = GradCAM(model=biopsy_model, target_layers=target_layers)
+        
+        grayscale_cam = cam(input_tensor=tensor, targets=None)
+        grayscale_cam = grayscale_cam[0, :]
+        
+        resized_img = original_image.resize((224, 224))
+        img_np = np.array(resized_img) / 255.0
+        
+        cam_image = show_cam_on_image(img_np, grayscale_cam, use_rgb=True)
+        
+        # Convert to Base64
+        cam_pil = Image.fromarray(cam_image)
+        buffered = io.BytesIO()
+        cam_pil.save(buffered, format="JPEG")
+        Heatmap_b64 = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        Heatmap_b64 = f"data:image/jpeg;base64,{Heatmap_b64}"
+    except Exception as e:
+        logger.error(f"Grad-CAM Failed: {e}")
+        Heatmap_b64 = None
+    
     return {
         "success": True,
         "prediction": class_name.capitalize(),
         "confidence": round(confidence.item() * 100, 2),
-        "details": {BIOPSY_CLASSES[i].capitalize(): round(probabilities[i].item() * 100, 2) for i in range(len(BIOPSY_CLASSES))}
+        "details": {BIOPSY_CLASSES[i].capitalize(): round(probabilities[i].item() * 100, 2) for i in range(len(BIOPSY_CLASSES))},
+        "heatmap": Heatmap_b64
     }
